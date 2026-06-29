@@ -136,6 +136,20 @@ docker-compose up -d
 # Health Check: http://localhost:5000/api/health
 ```
 
+### Deploy to Vercel (Mobile-Friendly)
+
+The frontend is fully **mobile-responsive** and deployable to Vercel so you can use it
+from your phone. Import the repo at [vercel.com/new](https://vercel.com/new), set the
+**Root Directory to `client`**, and deploy.
+
+- Works standalone via built-in serverless API routes (AI + real-time quotes)
+- **Demo Mode** — tap "Try Demo" to explore instantly (no backend/account needed)
+- **In-app API Keys page** — add/change your NVIDIA & stock-data keys directly in the UI
+- Installable as a PWA (Add to Home Screen)
+
+See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for full deployment steps, required APIs, and how
+real-time market data flows through the app.
+
 ### Option 2: Local Development
 
 ```bash
