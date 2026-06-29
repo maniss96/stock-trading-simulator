@@ -15,6 +15,7 @@ import {
   ChevronLeft,
   BarChart3,
   Plug,
+  Newspaper,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -24,6 +25,7 @@ const navItems = [
   { href: '/trading', icon: TrendingUp, label: 'Trading' },
   { href: '/portfolio', icon: Briefcase, label: 'Portfolio' },
   { href: '/predictions', icon: Brain, label: 'AI Predictions' },
+  { href: '/news', icon: Newspaper, label: 'News & Sentiment' },
   { href: '/leaderboard', icon: Trophy, label: 'Leaderboard' },
   { href: '/analytics', icon: BarChart3, label: 'Analytics' },
   { href: '/integrations', icon: Plug, label: 'API Keys' },

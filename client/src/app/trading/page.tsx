@@ -14,18 +14,21 @@ import { GlassCard, GlassCardHeader, GlassCardTitle } from '@/components/ui/Glas
 import { GlassButton } from '@/components/ui/GlassButton';
 import { GlassInput } from '@/components/ui/GlassInput';
 import { useTradingStore, useAuthStore } from '@/lib/store';
-import { formatCurrency, formatPercent, cn } from '@/lib/utils';
+import { useQuotes } from '@/hooks/useQuotes';
+import { formatCurrency, formatPercent, timeAgo, cn } from '@/lib/utils';
 
-const stocks = [
-  { symbol: 'AAPL', name: 'Apple Inc.', price: 178.50, change: 1.5, volume: '52.1M', high: 180.20, low: 176.80 },
-  { symbol: 'GOOGL', name: 'Alphabet Inc.', price: 141.80, change: -0.3, volume: '24.8M', high: 143.50, low: 140.20 },
-  { symbol: 'MSFT', name: 'Microsoft', price: 415.20, change: 2.1, volume: '18.3M', high: 418.90, low: 412.10 },
-  { symbol: 'AMZN', name: 'Amazon', price: 178.90, change: -0.8, volume: '31.9M', high: 181.40, low: 177.20 },
-  { symbol: 'TSLA', name: 'Tesla Inc.', price: 248.50, change: -2.1, volume: '38.7M', high: 254.80, low: 246.30 },
-  { symbol: 'META', name: 'Meta Platforms', price: 505.75, change: 3.8, volume: '28.4M', high: 512.30, low: 498.20 },
-  { symbol: 'NVDA', name: 'NVIDIA', price: 875.30, change: 4.2, volume: '45.2M', high: 882.10, low: 868.50 },
-  { symbol: 'JPM', name: 'JPMorgan Chase', price: 198.40, change: 0.5, volume: '8.7M', high: 200.10, low: 196.80 },
-];
+// Tradable universe (live prices overlaid via useQuotes)
+const STOCK_META: Record<string, string> = {
+  AAPL: 'Apple Inc.',
+  GOOGL: 'Alphabet Inc.',
+  MSFT: 'Microsoft',
+  AMZN: 'Amazon',
+  TSLA: 'Tesla Inc.',
+  META: 'Meta Platforms',
+  NVDA: 'NVIDIA',
+  JPM: 'JPMorgan Chase',
+};
+const TRADE_SYMBOLS = Object.keys(STOCK_META);
 
 export default function TradingPage() {
   const { user } = useAuthStore();
@@ -34,6 +37,21 @@ export default function TradingPage() {
     setSelectedSymbol, setOrderSide, setOrderType, setQuantity,
   } = useTradingStore();
   const [isPlacing, setIsPlacing] = useState(false);
+  const { quotes, lastUpdated, provider } = useQuotes(TRADE_SYMBOLS);
+
+  // Build the displayed stock list from live quotes + metadata
+  const stocks = TRADE_SYMBOLS.map((symbol) => {
+    const q = quotes[symbol];
+    return {
+      symbol,
+      name: STOCK_META[symbol],
+      price: q?.price ?? 0,
+      change: q?.changePercent ?? 0,
+      high: q?.high ?? 0,
+      low: q?.low ?? 0,
+      hasData: !!q,
+    };
+  });
 
   const selectedStock = stocks.find((s) => s.symbol === selectedSymbol) || stocks[0];
   const orderTotal = selectedStock.price * quantity;
@@ -57,8 +75,15 @@ export default function TradingPage() {
         <GlassCard className="lg:col-span-2">
           <GlassCardHeader>
             <GlassCardTitle>Market</GlassCardTitle>
-            <span className="text-xs text-accent-400 flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-accent-400 animate-pulse" /> Live
+            <span className="text-xs flex items-center gap-1.5 text-gray-400">
+              <span className={cn(
+                'w-2 h-2 rounded-full',
+                provider === 'simulated' ? 'bg-yellow-400' : 'bg-accent-400 animate-pulse'
+              )} />
+              {provider === 'simulated' ? 'Demo data' : `Live · ${provider}`}
+              {lastUpdated && (
+                <span className="text-gray-500 hidden sm:inline">· {timeAgo(lastUpdated)}</span>
+              )}
             </span>
           </GlassCardHeader>
           <div className="overflow-x-auto">
@@ -68,8 +93,7 @@ export default function TradingPage() {
                   <th>Stock</th>
                   <th>Price</th>
                   <th>Change</th>
-                  <th>High/Low</th>
-                  <th>Volume</th>
+                  <th className="hidden sm:table-cell">High/Low</th>
                   <th></th>
                 </tr>
               </thead>
@@ -89,22 +113,33 @@ export default function TradingPage() {
                         <p className="text-xs text-gray-400">{stock.name}</p>
                       </div>
                     </td>
-                    <td className="font-mono text-white">{formatCurrency(stock.price)}</td>
+                    <td className="font-mono text-white">
+                      {stock.hasData ? formatCurrency(stock.price) : (
+                        <span className="inline-block w-16 h-4 glass-skeleton rounded" />
+                      )}
+                    </td>
                     <td>
-                      <span className={cn(
-                        'inline-flex items-center gap-1 text-xs font-medium',
-                        stock.change >= 0 ? 'text-accent-400' : 'text-danger-400'
-                      )}>
-                        {stock.change >= 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
-                        {formatPercent(stock.change)}
-                      </span>
+                      {stock.hasData ? (
+                        <span className={cn(
+                          'inline-flex items-center gap-1 text-xs font-medium',
+                          stock.change >= 0 ? 'text-accent-400' : 'text-danger-400'
+                        )}>
+                          {stock.change >= 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+                          {formatPercent(stock.change)}
+                        </span>
+                      ) : (
+                        <span className="inline-block w-12 h-4 glass-skeleton rounded" />
+                      )}
                     </td>
-                    <td className="text-xs text-gray-400">
-                      <span className="text-accent-400">{formatCurrency(stock.high)}</span>
-                      {' / '}
-                      <span className="text-danger-400">{formatCurrency(stock.low)}</span>
+                    <td className="text-xs text-gray-400 hidden sm:table-cell">
+                      {stock.hasData ? (
+                        <>
+                          <span className="text-accent-400">{formatCurrency(stock.high)}</span>
+                          {' / '}
+                          <span className="text-danger-400">{formatCurrency(stock.low)}</span>
+                        </>
+                      ) : '—'}
                     </td>
-                    <td className="text-gray-400">{stock.volume}</td>
                     <td>
                       <GlassButton
                         variant="success"

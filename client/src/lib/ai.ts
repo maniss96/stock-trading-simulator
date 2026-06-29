@@ -99,3 +99,42 @@ export async function fetchQuote(symbol: string) {
 export function hasAIKey(): boolean {
   return !!getConfig().nvidiaApiKey;
 }
+
+export interface NewsArticle {
+  id: string;
+  headline: string;
+  summary: string;
+  source: string;
+  url: string;
+  datetime: number;
+  image?: string;
+  sentiment?: 'positive' | 'negative' | 'neutral';
+}
+
+export interface NewsResult {
+  articles: NewsArticle[];
+  source: 'finnhub' | 'simulated';
+  sentimentApplied: boolean;
+  overall: string;
+  summary: string;
+}
+
+/**
+ * Fetch news with optional AI sentiment scoring. Uses the configured keys.
+ */
+export async function fetchNews(symbol = ''): Promise<NewsResult> {
+  const config = getConfig();
+  const params = new URLSearchParams();
+  if (symbol) params.set('symbol', symbol);
+
+  const res = await fetch(`/api/news?${params.toString()}`, {
+    headers: {
+      'x-finnhub-key': config.finnhubKey,
+      'x-nvidia-key': config.nvidiaApiKey,
+      'x-nvidia-model': config.nvidiaModel,
+    },
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || 'News fetch failed');
+  return data.data as NewsResult;
+}
