@@ -7,6 +7,7 @@ import {
   Key,
   Brain,
   LineChart,
+  Building2,
   Eye,
   EyeOff,
   CheckCircle2,
@@ -31,6 +32,7 @@ export default function IntegrationsPage() {
     nvidiaModel,
     alphaVantageKey,
     finnhubKey,
+    stockfitKey,
     dataProvider,
     loadKeys,
     setKey,
@@ -41,6 +43,7 @@ export default function IntegrationsPage() {
   const [showNvidia, setShowNvidia] = useState(false);
   const [showAlpha, setShowAlpha] = useState(false);
   const [showFinnhub, setShowFinnhub] = useState(false);
+  const [showStockfit, setShowStockfit] = useState(false);
   const [testState, setTestState] = useState<TestState>('idle');
   const [testMessage, setTestMessage] = useState('');
   const [saved, setSaved] = useState(false);
@@ -295,6 +298,54 @@ export default function IntegrationsPage() {
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
               >
                 {showAlpha ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+        </div>
+      </GlassCard>
+
+      {/* StockFit Fundamentals */}
+      <GlassCard>
+        <GlassCardHeader>
+          <div className="flex items-center gap-2">
+            <Building2 className="w-5 h-5 text-purple-400" />
+            <GlassCardTitle>Company Fundamentals (StockFit)</GlassCardTitle>
+          </div>
+          <a
+            href="https://developer.stockfit.io/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-purple-400 hover:text-purple-300 flex items-center gap-1"
+          >
+            Get free key <ExternalLink className="w-3 h-3" />
+          </a>
+        </GlassCardHeader>
+
+        <div className="space-y-3">
+          <p className="text-xs text-gray-400">
+            StockFit provides company profiles, financials, ownership & earnings from SEC
+            filings. Powers the <span className="text-purple-300">Fundamentals</span> page.
+            Note: it does not provide live prices.
+          </p>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1.5">API Key</label>
+            <div className="relative">
+              <Key className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type={maskInput(showStockfit)}
+                value={stockfitKey}
+                onChange={(e) => setKey('stockfitKey', e.target.value)}
+                placeholder="fl_..."
+                className="glass-input pl-10 pr-10 font-mono text-sm"
+                autoComplete="off"
+                spellCheck={false}
+              />
+              <button
+                type="button"
+                onClick={() => setShowStockfit(!showStockfit)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+              >
+                {showStockfit ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
           </div>

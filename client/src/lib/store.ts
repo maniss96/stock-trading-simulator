@@ -136,6 +136,7 @@ export interface ApiKeyConfig {
   nvidiaModel: string;
   alphaVantageKey: string;
   finnhubKey: string;
+  stockfitKey: string;
   dataProvider: 'simulated' | 'alphavantage' | 'finnhub';
 }
 
@@ -144,6 +145,7 @@ const defaultApiConfig: ApiKeyConfig = {
   nvidiaModel: 'minimaxai/minimax-m3',
   alphaVantageKey: '',
   finnhubKey: '',
+  stockfitKey: '',
   dataProvider: 'simulated',
 };
 
@@ -179,6 +181,7 @@ export const useApiKeyStore = create<ApiKeyState>((set, get) => ({
       nvidiaModel: state.nvidiaModel,
       alphaVantageKey: state.alphaVantageKey,
       finnhubKey: state.finnhubKey,
+      stockfitKey: state.stockfitKey,
       dataProvider: state.dataProvider,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(config));

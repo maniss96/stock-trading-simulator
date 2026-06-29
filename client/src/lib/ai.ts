@@ -100,6 +100,26 @@ export function hasAIKey(): boolean {
   return !!getConfig().nvidiaApiKey;
 }
 
+export function hasStockfitKey(): boolean {
+  return !!getConfig().stockfitKey;
+}
+
+/**
+ * Fetch company fundamentals from StockFit (SEC-filings based).
+ * Returns the raw StockFit company details object (shape varies by tier).
+ */
+export async function fetchCompany(symbol: string): Promise<Record<string, any>> {
+  const config = getConfig();
+  const res = await fetch(`/api/company?symbol=${encodeURIComponent(symbol)}`, {
+    headers: {
+      'x-stockfit-key': config.stockfitKey,
+    },
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || 'Company lookup failed');
+  return data.data as Record<string, any>;
+}
+
 export interface NewsArticle {
   id: string;
   headline: string;

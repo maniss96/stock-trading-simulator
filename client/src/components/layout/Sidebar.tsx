@@ -16,6 +16,7 @@ import {
   BarChart3,
   Plug,
   Newspaper,
+  Building2,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -26,6 +27,7 @@ const navItems = [
   { href: '/portfolio', icon: Briefcase, label: 'Portfolio' },
   { href: '/predictions', icon: Brain, label: 'AI Predictions' },
   { href: '/news', icon: Newspaper, label: 'News & Sentiment' },
+  { href: '/company', icon: Building2, label: 'Fundamentals' },
   { href: '/leaderboard', icon: Trophy, label: 'Leaderboard' },
   { href: '/analytics', icon: BarChart3, label: 'Analytics' },
   { href: '/integrations', icon: Plug, label: 'API Keys' },

@@ -86,8 +86,17 @@ with each request and never persisted on the server.
 | **Alpha Vantage** | 25/day, 5/min | ~15min delay | Light usage | https://www.alphavantage.co/support/#api-key |
 | **Simulated** | Unlimited | N/A (mock) | Testing/demo | No key needed |
 
-### 3. Optional Future Add-ons
+### 3. Company Fundamentals (StockFit) — integrated
+- **Site:** https://developer.stockfit.io/
+- **Free tier:** Yes, no credit card.
+- **What it is:** SEC-filings fundamentals — company profile, sector/industry, financials,
+  ownership, earnings, ETF data. Powers the **Fundamentals** page (`/company`).
+- **Important:** StockFit is **not** a real-time price feed. Use Finnhub / Alpha Vantage /
+  the simulated provider for live quotes.
+
+### 4. Optional Future Add-ons
 - **Polygon.io** — institutional-grade market data (paid).
+- **stockdata.org** — free real-time US quotes sourced from IEX (alternative to Finnhub).
 - **Financial Modeling Prep** — fundamentals, financial statements.
 - **NewsAPI / Finnhub News** — for AI sentiment analysis on headlines.
 - **Twelve Data** — alternative real-time quotes + technical indicators.
