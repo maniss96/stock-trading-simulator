@@ -4,6 +4,7 @@ import stockRoutes from './stockRoutes';
 import tradingRoutes from './tradingRoutes';
 import portfolioRoutes from './portfolioRoutes';
 import leaderboardRoutes from './leaderboardRoutes';
+import aiRoutes from './aiRoutes';
 
 const router = Router();
 
@@ -12,6 +13,7 @@ router.use('/stocks', stockRoutes);
 router.use('/trading', tradingRoutes);
 router.use('/portfolio', portfolioRoutes);
 router.use('/leaderboard', leaderboardRoutes);
+router.use('/ai', aiRoutes);
 
 // Health check
 router.get('/health', (_req, res) => {
