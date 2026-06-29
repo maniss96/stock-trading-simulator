@@ -13,6 +13,7 @@ import {
 import { GlassCard, GlassCardHeader, GlassCardTitle } from '@/components/ui/GlassCard';
 import { GlassButton } from '@/components/ui/GlassButton';
 import { GlassInput } from '@/components/ui/GlassInput';
+import { CompanyProfilePanel } from '@/components/CompanyProfilePanel';
 import { useTradingStore, useAuthStore } from '@/lib/store';
 import { useQuotes } from '@/hooks/useQuotes';
 import { formatCurrency, formatPercent, timeAgo, cn } from '@/lib/utils';
@@ -278,6 +279,9 @@ export default function TradingPage() {
           </GlassButton>
         </GlassCard>
       </div>
+
+      {/* Company fundamentals for the selected symbol (StockFit) */}
+      <CompanyProfilePanel symbol={selectedStock.symbol} />
     </div>
   );
 }

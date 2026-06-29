@@ -31,6 +31,7 @@ export async function GET(req: NextRequest) {
 
   const finnhubKey = req.headers.get('x-finnhub-key') || process.env.FINNHUB_API_KEY || '';
   const alphaKey = req.headers.get('x-alphavantage-key') || process.env.ALPHA_VANTAGE_API_KEY || '';
+  const stockdataKey = req.headers.get('x-stockdata-key') || process.env.STOCKDATA_API_KEY || '';
 
   if (!symbol || !/^[A-Z.]{1,6}$/.test(symbol)) {
     return NextResponse.json({ success: false, error: 'Valid symbol required' }, { status: 400 });
@@ -59,6 +60,42 @@ export async function GET(req: NextRequest) {
       }
       return NextResponse.json(
         { success: false, error: 'No data from Finnhub (check key or symbol)' },
+        { status: 502 }
+      );
+    }
+
+    if (provider === 'stockdata' && stockdataKey) {
+      const res = await fetch(
+        `https://api.stockdata.org/v1/data/quote?symbols=${symbol}&api_token=${stockdataKey}`
+      );
+      const d = await res.json();
+      const row = Array.isArray(d?.data) ? d.data[0] : null;
+      if (row && typeof row.price === 'number') {
+        const prev =
+          typeof row.previous_close_price === 'number' ? row.previous_close_price : row.price;
+        const change = parseFloat((row.price - prev).toFixed(2));
+        // stockdata's day_change is a percentage; fall back to a computed value
+        const changePercent =
+          typeof row.day_change === 'number'
+            ? row.day_change
+            : prev > 0
+            ? parseFloat(((change / prev) * 100).toFixed(2))
+            : 0;
+        const quote: Quote = {
+          symbol,
+          price: row.price,
+          change,
+          changePercent,
+          high: row.day_high ?? row.price,
+          low: row.day_low ?? row.price,
+          open: row.day_open ?? row.price,
+          previousClose: prev,
+          provider: 'stockdata',
+        };
+        return NextResponse.json({ success: true, data: quote });
+      }
+      return NextResponse.json(
+        { success: false, error: 'No data from stockdata.org (check key or symbol)' },
         { status: 502 }
       );
     }

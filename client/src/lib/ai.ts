@@ -88,6 +88,7 @@ export async function fetchQuote(symbol: string) {
       headers: {
         'x-finnhub-key': config.finnhubKey,
         'x-alphavantage-key': config.alphaVantageKey,
+        'x-stockdata-key': config.stockdataKey,
       },
     }
   );

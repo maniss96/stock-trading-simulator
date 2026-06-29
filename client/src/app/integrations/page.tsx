@@ -32,6 +32,7 @@ export default function IntegrationsPage() {
     nvidiaModel,
     alphaVantageKey,
     finnhubKey,
+    stockdataKey,
     stockfitKey,
     dataProvider,
     loadKeys,
@@ -43,6 +44,7 @@ export default function IntegrationsPage() {
   const [showNvidia, setShowNvidia] = useState(false);
   const [showAlpha, setShowAlpha] = useState(false);
   const [showFinnhub, setShowFinnhub] = useState(false);
+  const [showStockdata, setShowStockdata] = useState(false);
   const [showStockfit, setShowStockfit] = useState(false);
   const [testState, setTestState] = useState<TestState>('idle');
   const [testMessage, setTestMessage] = useState('');
@@ -225,11 +227,13 @@ export default function IntegrationsPage() {
             >
               <option value="simulated">Simulated (no key needed)</option>
               <option value="finnhub">Finnhub (real-time, recommended)</option>
+              <option value="stockdata">stockdata.org (free real-time, IEX)</option>
               <option value="alphavantage">Alpha Vantage</option>
             </select>
             <p className="text-xs text-gray-500 mt-1">
               {dataProvider === 'simulated' && 'Uses generated demo prices — great for testing.'}
               {dataProvider === 'finnhub' && 'Real-time quotes. Free tier: 60 calls/min.'}
+              {dataProvider === 'stockdata' && 'Free real-time US quotes from IEX. Free tier: 100 requests/day.'}
               {dataProvider === 'alphavantage' && 'Free tier: 25 requests/day, 5/min.'}
             </p>
           </div>
@@ -264,6 +268,40 @@ export default function IntegrationsPage() {
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
               >
                 {showFinnhub ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+
+          {/* stockdata.org key */}
+          <div className={cn(dataProvider !== 'stockdata' && 'opacity-50')}>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-sm font-medium text-gray-300">stockdata.org API Key</label>
+              <a
+                href="https://www.stockdata.org/register"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-accent-400 hover:text-accent-300 flex items-center gap-1"
+              >
+                Get free key <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+            <div className="relative">
+              <Key className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type={maskInput(showStockdata)}
+                value={stockdataKey}
+                onChange={(e) => setKey('stockdataKey', e.target.value)}
+                placeholder="Your stockdata.org token"
+                className="glass-input pl-10 pr-10 font-mono text-sm"
+                autoComplete="off"
+                spellCheck={false}
+              />
+              <button
+                type="button"
+                onClick={() => setShowStockdata(!showStockdata)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+              >
+                {showStockdata ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
           </div>

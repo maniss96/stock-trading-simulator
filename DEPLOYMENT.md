@@ -83,6 +83,7 @@ with each request and never persisted on the server.
 | Provider | Free Tier | Real-Time | Best For | Get Key |
 |----------|-----------|-----------|----------|---------|
 | **Finnhub** | 60 calls/min | Yes | Recommended default | https://finnhub.io/register |
+| **stockdata.org** | 100/day | Yes (IEX) | Free real-time alternative | https://www.stockdata.org/register |
 | **Alpha Vantage** | 25/day, 5/min | ~15min delay | Light usage | https://www.alphavantage.co/support/#api-key |
 | **Simulated** | Unlimited | N/A (mock) | Testing/demo | No key needed |
 
