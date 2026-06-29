@@ -1,0 +1,335 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =====================================================
+   GLASSMORPHISM DESIGN SYSTEM - Stock Trading Simulator
+   ===================================================== */
+
+@layer base {
+  :root {
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.18);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    --glass-blur: 16px;
+    --neon-primary: rgba(99, 102, 241, 0.5);
+    --neon-green: rgba(34, 197, 94, 0.5);
+    --neon-red: rgba(239, 68, 68, 0.5);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply bg-dark-950 text-white antialiased;
+    background: linear-gradient(135deg, #0c1445 0%, #1a0a3e 25%, #2d1b69 50%, #1e3a5f 75%, #0c1445 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.4);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(99, 102, 241, 0.6);
+  }
+}
+
+@layer components {
+  /* ===== GLASS CARD VARIANTS ===== */
+  .glass-card {
+    @apply relative rounded-2xl border p-6;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-color: var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    transition: all 0.3s ease;
+  }
+
+  .glass-card:hover {
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.45);
+    transform: translateY(-2px);
+  }
+
+  .glass-card-sm {
+    @apply glass-card p-4 rounded-xl;
+  }
+
+  .glass-card-lg {
+    @apply glass-card p-8 rounded-3xl;
+  }
+
+  .glass-card-flat {
+    @apply glass-card;
+    transform: none !important;
+  }
+
+  .glass-card-flat:hover {
+    transform: none !important;
+  }
+
+  /* ===== GLASS NAVIGATION ===== */
+  .glass-nav {
+    @apply fixed top-0 left-0 right-0 z-50 px-6 py-3;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* ===== GLASS SIDEBAR ===== */
+  .glass-sidebar {
+    @apply fixed left-0 top-0 h-full w-64 z-40;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* ===== GLASS BUTTONS ===== */
+  .glass-btn {
+    @apply relative px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-300;
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    backdrop-filter: blur(10px);
+    color: #a5b4fc;
+  }
+
+  .glass-btn:hover {
+    background: rgba(99, 102, 241, 0.25);
+    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .glass-btn:active {
+    transform: translateY(0);
+  }
+
+  .glass-btn-success {
+    background: rgba(34, 197, 94, 0.15);
+    border-color: rgba(34, 197, 94, 0.3);
+    color: #86efac;
+  }
+
+  .glass-btn-success:hover {
+    background: rgba(34, 197, 94, 0.25);
+    border-color: rgba(34, 197, 94, 0.5);
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+  }
+
+  .glass-btn-danger {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+  }
+
+  .glass-btn-danger:hover {
+    background: rgba(239, 68, 68, 0.25);
+    border-color: rgba(239, 68, 68, 0.5);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+  }
+
+  .glass-btn-solid {
+    @apply px-6 py-3 rounded-xl font-semibold text-sm text-white transition-all duration-300;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border: none;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+  }
+
+  .glass-btn-solid:hover {
+    box-shadow: 0 6px 25px rgba(99, 102, 241, 0.5);
+    transform: translateY(-2px);
+  }
+
+  /* ===== GLASS INPUT ===== */
+  .glass-input {
+    @apply w-full px-4 py-3 rounded-xl text-white placeholder-gray-400 outline-none transition-all duration-300;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+  }
+
+  .glass-input:focus {
+    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .glass-input::placeholder {
+    color: rgba(148, 163, 184, 0.6);
+  }
+
+  /* ===== GLASS SELECT ===== */
+  .glass-select {
+    @apply glass-input appearance-none cursor-pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6,9 12,15 18,9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+  }
+
+  /* ===== GLASS TABLE ===== */
+  .glass-table {
+    @apply w-full border-collapse;
+  }
+
+  .glass-table th {
+    @apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .glass-table td {
+    @apply px-4 py-3 text-sm;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .glass-table tr:hover td {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  /* ===== NEON TEXT ===== */
+  .neon-text {
+    text-shadow: 0 0 10px var(--neon-primary), 0 0 20px var(--neon-primary);
+  }
+
+  .neon-text-green {
+    text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
+  }
+
+  .neon-text-red {
+    text-shadow: 0 0 10px var(--neon-red), 0 0 20px var(--neon-red);
+  }
+
+  /* ===== PRICE COLORS ===== */
+  .price-up {
+    @apply text-accent-400;
+  }
+
+  .price-down {
+    @apply text-danger-400;
+  }
+
+  .price-neutral {
+    @apply text-gray-400;
+  }
+
+  /* ===== BADGE ===== */
+  .glass-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold;
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+  }
+
+  .glass-badge-success {
+    background: rgba(34, 197, 94, 0.15);
+    border-color: rgba(34, 197, 94, 0.3);
+    color: #86efac;
+  }
+
+  .glass-badge-danger {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+  }
+
+  .glass-badge-warning {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.3);
+    color: #fcd34d;
+  }
+
+  /* ===== ANIMATED BACKGROUND ORBS ===== */
+  .bg-orb {
+    @apply absolute rounded-full opacity-20 blur-3xl;
+    animation: float 8s ease-in-out infinite;
+  }
+
+  .bg-orb-1 {
+    @apply w-96 h-96 bg-primary-600;
+    top: -10%;
+    right: -5%;
+    animation-delay: 0s;
+  }
+
+  .bg-orb-2 {
+    @apply w-80 h-80 bg-purple-600;
+    bottom: -10%;
+    left: -5%;
+    animation-delay: 3s;
+  }
+
+  .bg-orb-3 {
+    @apply w-64 h-64 bg-blue-600;
+    top: 50%;
+    left: 50%;
+    animation-delay: 6s;
+  }
+
+  /* ===== SIGNAL INDICATORS ===== */
+  .signal-strong-buy {
+    @apply text-emerald-400;
+    text-shadow: 0 0 8px rgba(52, 211, 153, 0.5);
+  }
+
+  .signal-buy {
+    @apply text-green-400;
+  }
+
+  .signal-hold {
+    @apply text-yellow-400;
+  }
+
+  .signal-sell {
+    @apply text-orange-400;
+  }
+
+  .signal-strong-sell {
+    @apply text-red-400;
+    text-shadow: 0 0 8px rgba(248, 113, 113, 0.5);
+  }
+
+  /* ===== LOADING SKELETON ===== */
+  .glass-skeleton {
+    @apply rounded-lg;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.05) 25%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.05) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+  }
+
+  .text-gradient-gold {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706);
+  }
+}

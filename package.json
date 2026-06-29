@@ -1,0 +1,35 @@
+{
+  "name": "stock-trading-simulator",
+  "version": "1.0.0",
+  "description": "AI-powered stock trading simulator with market trend predictions and glassmorphism UI",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server",
+    "shared"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:client": "npm run dev --workspace=client",
+    "dev:server": "npm run dev --workspace=server",
+    "build": "npm run build --workspace=shared && npm run build --workspace=client && npm run build --workspace=server",
+    "start": "npm run start --workspace=server",
+    "lint": "npm run lint --workspace=client && npm run lint --workspace=server",
+    "test": "npm run test --workspace=server",
+    "clean": "rm -rf node_modules client/node_modules server/node_modules shared/node_modules"
+  },
+  "keywords": [
+    "stock-trading",
+    "simulator",
+    "ai-predictions",
+    "tensorflow",
+    "nextjs",
+    "mongodb"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "typescript": "^5.4.0"
+  }
+}
