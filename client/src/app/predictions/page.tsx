@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Brain, TrendingUp, TrendingDown, Activity, BarChart3, Zap } from 'lucide-react';
 import { GlassCard, GlassCardHeader, GlassCardTitle } from '@/components/ui/GlassCard';
 import { GlassButton } from '@/components/ui/GlassButton';
+import { AILiveAnalysis } from '@/components/AILiveAnalysis';
 import { formatCurrency, formatPercent, cn } from '@/lib/utils';
 
 const predictions = [
@@ -99,6 +100,9 @@ export default function PredictionsPage() {
           </div>
         </div>
       </GlassCard>
+
+      {/* Live AI Analysis - uses your NVIDIA API key */}
+      <AILiveAnalysis />
 
       {/* Timeframe Selector */}
       <div className="flex gap-2">

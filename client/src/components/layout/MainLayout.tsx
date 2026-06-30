@@ -33,8 +33,9 @@ export function MainLayout({ children }: MainLayoutProps) {
         {/* Main content */}
         <main
           className={cn(
-            'flex-1 min-h-[calc(100vh-4rem)] p-6 transition-all duration-300',
-            isAuthenticated && (sidebarOpen ? 'ml-64' : 'ml-20')
+            'flex-1 min-h-[calc(100vh-4rem)] p-4 sm:p-6 transition-all duration-300 w-full',
+            // Only apply left margin on large screens (desktop sidebar)
+            isAuthenticated && (sidebarOpen ? 'lg:ml-64' : 'lg:ml-20')
           )}
         >
           {children}

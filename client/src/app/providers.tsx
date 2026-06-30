@@ -6,10 +6,17 @@ import { useAuthStore } from '@/lib/store';
 import { authAPI } from '@/lib/api';
 
 export function Providers({ children }: { children: ReactNode }) {
-  const { setUser, setLoading } = useAuthStore();
+  const { setUser, setLoading, loginAsGuest } = useAuthStore();
 
   useEffect(() => {
     const initAuth = async () => {
+      // Restore guest/demo session (works without a backend, e.g. on Vercel)
+      if (localStorage.getItem('guestMode') === 'true') {
+        loginAsGuest();
+        setLoading(false);
+        return;
+      }
+
       const token = localStorage.getItem('accessToken');
       if (token) {
         try {
@@ -26,7 +33,7 @@ export function Providers({ children }: { children: ReactNode }) {
     };
 
     initAuth();
-  }, [setUser, setLoading]);
+  }, [setUser, setLoading, loginAsGuest]);
 
   return <MainLayout>{children}</MainLayout>;
 }

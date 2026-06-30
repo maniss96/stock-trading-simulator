@@ -13,7 +13,8 @@ import {
 } from 'lucide-react';
 import { GlassCard, GlassCardHeader, GlassCardTitle } from '@/components/ui/GlassCard';
 import { useAuthStore } from '@/lib/store';
-import { formatCurrency, formatPercent, cn } from '@/lib/utils';
+import { useQuotes } from '@/hooks/useQuotes';
+import { formatCurrency, formatPercent, timeAgo, cn } from '@/lib/utils';
 
 // Mock data for demonstration
 const portfolioStats = {
@@ -25,13 +26,15 @@ const portfolioStats = {
   totalReturnPercent: 5.42,
 };
 
-const topMovers = [
-  { symbol: 'NVDA', name: 'NVIDIA', price: 875.30, change: 4.2, volume: '45.2M' },
-  { symbol: 'TSLA', name: 'Tesla', price: 248.50, change: -2.1, volume: '38.7M' },
-  { symbol: 'AAPL', name: 'Apple', price: 178.50, change: 1.5, volume: '52.1M' },
-  { symbol: 'META', name: 'Meta', price: 505.75, change: 3.8, volume: '28.4M' },
-  { symbol: 'AMZN', name: 'Amazon', price: 178.90, change: -0.8, volume: '31.9M' },
-];
+// Symbols tracked on the dashboard (live prices overlaid via useQuotes)
+const MOVERS_META: Record<string, string> = {
+  NVDA: 'NVIDIA',
+  TSLA: 'Tesla',
+  AAPL: 'Apple',
+  META: 'Meta',
+  AMZN: 'Amazon',
+};
+const MOVER_SYMBOLS = Object.keys(MOVERS_META);
 
 const recentTrades = [
   { symbol: 'AAPL', side: 'BUY', quantity: 10, price: 175.20, time: '2h ago' },
@@ -48,6 +51,19 @@ const aiSignals = [
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
+  const { quotes, lastUpdated, provider } = useQuotes(MOVER_SYMBOLS);
+
+  // Build mover rows from live quotes, sorted by absolute % change
+  const topMovers = MOVER_SYMBOLS.map((symbol) => {
+    const q = quotes[symbol];
+    return {
+      symbol,
+      name: MOVERS_META[symbol],
+      price: q?.price ?? 0,
+      change: q?.changePercent ?? 0,
+      hasData: !!q,
+    };
+  }).sort((a, b) => Math.abs(b.change) - Math.abs(a.change));
 
   return (
     <div className="space-y-6">
@@ -159,7 +175,16 @@ export default function DashboardPage() {
         <GlassCard className="lg:col-span-2">
           <GlassCardHeader>
             <GlassCardTitle>Market Movers</GlassCardTitle>
-            <span className="text-xs text-gray-400">Real-time</span>
+            <span className="text-xs text-gray-400 flex items-center gap-1.5">
+              <span className={cn(
+                'w-2 h-2 rounded-full',
+                provider === 'simulated' ? 'bg-yellow-400' : 'bg-accent-400 animate-pulse'
+              )} />
+              {provider === 'simulated' ? 'Demo data' : `Live · ${provider}`}
+              {lastUpdated && (
+                <span className="text-gray-500 hidden sm:inline">· {timeAgo(lastUpdated)}</span>
+              )}
+            </span>
           </GlassCardHeader>
           <div className="overflow-x-auto">
             <table className="glass-table">
@@ -168,7 +193,6 @@ export default function DashboardPage() {
                   <th>Symbol</th>
                   <th>Price</th>
                   <th>Change</th>
-                  <th>Volume</th>
                 </tr>
               </thead>
               <tbody>
@@ -180,23 +204,30 @@ export default function DashboardPage() {
                         <p className="text-xs text-gray-400">{stock.name}</p>
                       </div>
                     </td>
-                    <td className="font-mono text-white">{formatCurrency(stock.price)}</td>
-                    <td>
-                      <div className={cn(
-                        'inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium',
-                        stock.change >= 0
-                          ? 'bg-accent-500/10 text-accent-400'
-                          : 'bg-danger-500/10 text-danger-400'
-                      )}>
-                        {stock.change >= 0 ? (
-                          <ArrowUpRight className="w-3 h-3" />
-                        ) : (
-                          <ArrowDownRight className="w-3 h-3" />
-                        )}
-                        {formatPercent(stock.change)}
-                      </div>
+                    <td className="font-mono text-white">
+                      {stock.hasData ? formatCurrency(stock.price) : (
+                        <span className="inline-block w-16 h-4 glass-skeleton rounded" />
+                      )}
                     </td>
-                    <td className="text-gray-400">{stock.volume}</td>
+                    <td>
+                      {stock.hasData ? (
+                        <div className={cn(
+                          'inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium',
+                          stock.change >= 0
+                            ? 'bg-accent-500/10 text-accent-400'
+                            : 'bg-danger-500/10 text-danger-400'
+                        )}>
+                          {stock.change >= 0 ? (
+                            <ArrowUpRight className="w-3 h-3" />
+                          ) : (
+                            <ArrowDownRight className="w-3 h-3" />
+                          )}
+                          {formatPercent(stock.change)}
+                        </div>
+                      ) : (
+                        <span className="inline-block w-12 h-4 glass-skeleton rounded" />
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>

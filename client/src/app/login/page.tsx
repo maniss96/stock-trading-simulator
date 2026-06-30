@@ -17,7 +17,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuthStore();
+  const { login, loginAsGuest } = useAuthStore();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,6 +36,11 @@ export default function LoginPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDemo = () => {
+    loginAsGuest();
+    router.push('/dashboard');
   };
 
   return (
@@ -105,6 +110,27 @@ export default function LoginPage() {
               Sign In
             </GlassButton>
           </form>
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 my-5">
+            <div className="flex-1 h-px bg-white/10" />
+            <span className="text-xs text-gray-500">or</span>
+            <div className="flex-1 h-px bg-white/10" />
+          </div>
+
+          {/* Demo mode - works without a backend (great for Vercel/mobile) */}
+          <GlassButton
+            type="button"
+            variant="primary"
+            className="w-full"
+            size="lg"
+            onClick={handleDemo}
+          >
+            Try Demo (no account needed)
+          </GlassButton>
+          <p className="text-[11px] text-gray-500 text-center mt-2">
+            Explore the full app instantly with a demo account.
+          </p>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-400">
